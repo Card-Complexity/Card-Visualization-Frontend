@@ -35,10 +35,12 @@ Ekam: Palindrome, Merge for the backend, and then animations to match these sort
 # Organization 
 [Scrum Board](https://github.com/orgs/Card-Complexity/projects/1)
 
+# Sorts & Algorithms
+
 ## Bubble Sort Sample
 
 
-```Java
+```java
 import java.util.Arrays;
 import java.util.Random;
 
@@ -134,10 +136,10 @@ bubbleSort.main(null);
     Total time: 217 ms
 
 
-## Selection Sort Sample
+## Insertion Sort Sample
 
 
-```Java
+```java
 import java.util.Arrays;
 import java.util.Random;
 
@@ -240,7 +242,7 @@ insertionSort.main(null);
 ## Selection Sort Sample
 
 
-```Java
+```java
 import java.util.Arrays;
 import java.util.Random;
 
@@ -332,10 +334,140 @@ selectionSort.main(null);
     Total time: 152 ms
 
 
-# Fibonacci
+## Merge Sort
 
 
-```Java
+```java
+import java.util.Arrays;
+import java.util.Random;
+
+public class MergeSort {
+    // instance variables to keep track of iterations, comparisons, and swaps
+    private int iterations;
+    private int comparisons;
+    private int swaps;
+
+    // method to perform merge sort on an array
+    public void sort(int[] arr) {
+        // reset instance variables
+        iterations = 0;
+        comparisons = 0;
+        swaps = 0;
+
+        mergeSort(arr, 0, arr.length - 1);
+    }
+
+    // recursive method for merge sort
+    private void mergeSort(int[] arr, int left, int right) {
+        if (left < right) {
+            // middle point
+            int mid = left + (right - left) / 2;
+
+            // sprting both halves
+            mergeSort(arr, left, mid);
+            mergeSort(arr, mid + 1, right);
+
+            // merging sorted halves
+            merge(arr, left, mid, right);
+        }
+    }
+
+
+    private void merge(int[] arr, int left, int mid, int right) {
+
+        int n1 = mid - left + 1;
+        int n2 = right - mid;
+
+
+        int[] leftArr = new int[n1];
+        int[] rightArr = new int[n2];
+
+
+        for (int i = 0; i < n1; ++i)
+            leftArr[i] = arr[left + i];
+        for (int j = 0; j < n2; ++j)
+            rightArr[j] = arr[mid + 1 + j];
+
+        // merging arrays
+
+        int i = 0, j = 0;
+
+        int k = left;
+        while (i < n1 && j < n2) {
+            iterations++;
+            if (leftArr[i] <= rightArr[j]) {
+                arr[k] = leftArr[i];
+                i++;
+            } else {
+                arr[k] = rightArr[j];
+                j++;
+            }
+            k++;
+            comparisons++;
+        }
+
+        while (i < n1) {
+            arr[k] = leftArr[i];
+            i++;
+            k++;
+        }
+
+        while (j < n2) {
+            arr[k] = rightArr[j];
+            j++;
+            k++;
+        }
+    }
+
+    public void test() {
+        // timer
+        long startTime = System.nanoTime();
+        for (int i = 0; i < 12; i++) {
+            int[] arr = new int[5000];
+            Random rand = new Random();
+
+            for (int j = 0; j < arr.length; j++) {
+                arr[j] = rand.nextInt(1000);
+            }
+
+            sort(arr);
+        }
+        // stop timer
+        long endTime = System.nanoTime();
+
+        System.out.println("Total iterations: " + iterations);
+        System.out.println("Total comparisons: " + comparisons);
+        System.out.println("Total swaps: " + swaps);
+        System.out.println("Total time: " + (endTime - startTime) / 1000000 + " ms");
+    }
+
+    public void testRandomValues() {
+        int[] arr = new int[10];
+        Random rand = new Random();
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = rand.nextInt(1000);
+        }
+
+        System.out.println("Before sorting: " + Arrays.toString(arr));
+        sort(arr);
+        System.out.println("After sorting: " + Arrays.toString(arr));
+    }
+
+    public static void main(String[] args) {
+        MergeSort ms = new MergeSort();
+        ms.testRandomValues();
+        ms.test();
+    }
+}
+
+MergeSort.main(null);
+
+```
+
+## Fibonacci
+
+
+```java
 import java.util.ArrayList;
 import java.util.List;
 
