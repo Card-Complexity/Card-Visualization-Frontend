@@ -35,6 +35,8 @@ Ekam: Palindrome, Merge for the backend, and then animations to match these sort
 # Organization 
 [Scrum Board](https://github.com/orgs/Card-Complexity/projects/1)
 
+# Sorts & Algorithms
+
 ## Bubble Sort Sample
 
 
@@ -462,7 +464,7 @@ MergeSort.main(null);
 
 ```
 
-# Fibonacci
+## Fibonacci
 
 
 ```java
