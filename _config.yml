@@ -1,5 +1,5 @@
 title: Card Complexity
-description: "Card Complexity Frontend"
+description: "Card Complexity Visualization"
 owner_name: Card-Complexity
 github_username: Card-Complexity
 github_repo: "Card-Visualization-Frontend"
@@ -7,7 +7,9 @@ baseurl: "/Card-Visualization-Frontend"
 remote_theme: jekyll/minima
 minima:
   social_links:
-    - { platform: github, user_url: "https://github.com/Card-Complexity"}
+    - { platform: github, user_url: "https://github.com/nighthawkcoders"}
+    - { platform: github, user_url: "https://github.com/Tirth-Thakkar"}
+    - { platform: github, user_url: "https://github.com/h4seeb-cmd"}
 # remote_theme: pages-themes/dinky@v0.2.0
 # remote_theme: pages-themes/minimal@v0.2.0
 # remote_theme: pages-themes/hacker@v0.2.0
