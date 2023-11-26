@@ -1,0 +1,68 @@
+<style>
+    .dealBtn {
+        background-color: red;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-bottom: 30px;
+    }
+    
+    .dealBtn:hover {
+        background-color: darkred;
+    }
+
+    .cardContainer { 
+        border: 1px solid black;
+    }
+
+    .cardContainer img {
+        width: 130px; 
+        height: auto; 
+        margin: 5px;
+    }
+
+</style>
+
+
+
+<body>
+<div class="layout">
+    <button class="dealBtn" >Deal out the cards</button>
+    <div class="cardContainer"></div>
+</div>
+</body>
+
+
+
+<script>
+    const dealBtnClick = document.querySelector(".dealBtn");
+    const cardContainer = document.querySelector(".cardContainer");
+    const deckURL = `https://www.deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1`;
+    let deckID;
+
+    async function getDeck(){
+        const response = await fetch(deckURL);
+        const deckDetails = await response.json();
+
+        console.log(deckDetails.deck_id);
+        deckID = deckDetails.deck_id;
+    }
+    getDeck();
+
+
+    dealBtnClick.onclick = async function(){
+        for (let i = 0; i < 10; i++) {
+            const cardURL = `https://www.deckofcardsapi.com/api/deck/${deckID}/draw/?count=1`;
+            const response = await fetch(cardURL);
+            const card = await response.json();
+
+            console.log(card.cards[0]);
+
+            const cardDetails = card.cards[0];
+            cardContainer.innerHTML += `<img src="${cardDetails.image}">`;
+        }
+    }
+
+</script>
