@@ -61,8 +61,20 @@
             console.log(card.cards[0]);
 
             const cardDetails = card.cards[0];
+            cards.push(cardDetails.value);
             cardContainer.innerHTML += `<img src="${cardDetails.image}">`;
         }
-    }
+
+        const sortResponse = await fetch('/sort/bubble', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(cards)
+        });
+    
+        const sortedCards = await sortResponse.json();
+        console.log('Sorted Cards:', sortedCards);
+    };
 
 </script>
