@@ -27,3 +27,20 @@ body {
     position: absolute;
     transition: transform 0.3s ease-in-out;
 }
+
+/* Custom styles for different card suits */
+.card[data-suit="H"] {
+    color: red;
+}
+
+.card[data-suit="D"] {
+    color: red;
+}
+
+.card[data-suit="C"] {
+    color: black;
+}
+
+.card[data-suit="S"] {
+    color: black;
+}
