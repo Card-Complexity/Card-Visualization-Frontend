@@ -32,10 +32,23 @@
         margin-bottom: 30px;
         margin-left: 10px;
     }
+
+    .sortStepBtn {
+        background-color: red;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 30px;
+        margin-bottom: 30px;
+        margin-left: 10px;
+    }
     
     .dealBtn:hover {
         background-color: darkred;
     }
+    
 
     .cardContainer { 
         border: 1px solid black;
@@ -46,6 +59,45 @@
         height: auto; 
         margin: 5px;
     }
+
+    /* animation for cards */
+    @keyframes bounceEffect {
+        0% { transform: translateY(0); }
+        50% { transform: translateY(-5px); }
+        100% { transform: translateY(0); }
+    }
+    
+    .overlay {
+        position: relative;
+    }
+    
+    .overlay::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        color: rgba(234, 28, 28, 0.5);
+        transition: opacity 1s ease-in-out;
+        z-index: 1;
+    }
+    
+    .overlay::after {
+        opacity: 1;
+    }
+    
+    .overlay {
+        animation: fadeOut 1s forwards;
+    }
+    
+    @keyframes fadeOut {
+        0% { opacity: 1; }
+        100% { opacity: 0; }
+    }
+
+    /* end of animation for cards */
+    
 
 </style>
 
@@ -73,7 +125,10 @@
     const deckURL = `https://www.deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1`;
     let deckID;
 
+    let data = [];
     let cards = [];
+    let sortType = '';
+    let swapData = [];
 
     const cardImages = {
         1: 'https://deckofcardsapi.com/static/img/AS.png', 
@@ -92,6 +147,26 @@
 
     };
 
+    let beforeSorting = [];
+
+    function renderCards(beforeSortingArray) {
+        cardContainer.innerHTML = '';
+    
+        beforeSortingArray.forEach(cardValue => {
+            if (cardImages.hasOwnProperty(cardValue)) {
+                const imageSrc = cardImages[cardValue];
+                const cardImage = document.createElement('img');
+                cardImage.src = imageSrc;
+                cardImage.alt = `Card - ${cardValue}`;
+                cardImage.classList.add('card');
+            
+                cardContainer.appendChild(cardImage);
+            } else {
+                console.error(`Card value ${cardValue} not found in cardImages.`);
+            }
+        });
+    }
+
     const sortKeyMapping = {
         bubble: 'B',
         selection: 'S',
@@ -100,10 +175,57 @@
     };
 
 
+    function createSortStepButton() {
+        const sortStepButton = document.createElement('button');
+        sortStepButton.textContent = 'Sort Step';
+        sortStepButton.classList.add('sortStepBtn'); 
+    
+        const layoutDiv = document.querySelector('.layout');
+        layoutDiv.appendChild(sortStepButton);
+
+        sortStepButton.addEventListener('click', () => {
+            if (currentStep < swapData.length) {
+                const swap = swapData[currentStep];
+                swapCards(swap.Original - 1, swap.Final - 1); // - 1 to adjust to array index
+                currentStep++;
+            } else {
+                sortStepButton.disabled = true;
+                console.log('End of position swaps');
+            }
+          });
+    }
+
+    let currentStep = 0;
+
+    function swapCards(originalIndex, finalIndex) {
+        const cardImages = document.querySelectorAll('.cardContainer img');
+    
+        // swap the src attribute of the cards to visually change their positions
+        const tempSrc = cardImages[originalIndex].src;
+        cardImages[originalIndex].src = cardImages[finalIndex].src;
+        cardImages[finalIndex].src = tempSrc;
+
+        cardImages[originalIndex].style.animation = "bounceEffect 0.5s";
+        cardImages[finalIndex].style.animation = "bounceEffect 0.5s";
+    
+        // apply overlay effect to the swapping cards
+        cardImages[originalIndex].classList.add('overlay');
+        cardImages[finalIndex].classList.add('overlay');
+    
+        // remove the overlay and animation after 1 second
+        setTimeout(() => {
+            cardImages[originalIndex].classList.remove('overlay');
+            cardImages[finalIndex].classList.remove('overlay');
+            cardImages[originalIndex].style.animation = "none";
+            cardImages[finalIndex].style.animation = "none";
+        }, 1000);
+    }
+
     sortButtons.forEach(button => {
         button.addEventListener("click", () => {
-            const sortType = button.dataset.sort;
+            sortType = button.dataset.sort;
             sortCards(sortType);
+            createSortStepButton();
 
         });
     });
@@ -113,9 +235,9 @@
         console.log(sortKeyMapping[sortType]); 
     }
 
+    let beforeSortingArray = null;
 
-
-  function sortCards(sortType) {
+    function sortCards(sortType) {
         const sortURL = `http://localhost:8085/api/sorts/${sortType}Cards`;
         console.log(sortURL);
 
@@ -133,34 +255,30 @@
                 }
                 throw new Error('Network error');
             })
-            .then(data => {
+            .then(responseData => {
                 console.log(`Received sorted data using ${sortType} sort:`, data);
+                data = responseData;
+                console.log(data);
 
-                const first13Cards = data.slice(0, 13);
-                cardContainer.innerHTML = '';
+                swapData = responseData.slice(0, -1);
+                console.log("swap data: ");
+                console.log(swapData);
+
+                // loop through the response object to find the object containing the beforeSorting property
+                for (const key in responseData) {
+                    if (responseData.hasOwnProperty(key) && responseData[key].hasOwnProperty('BeforeSorting')) {
+                        // extract the BeforeSorting array and parse it to an actual array
+                        beforeSortingArray = JSON.parse(responseData[key].BeforeSorting);
+                        break; 
+                    }
+                }
+                renderCards(beforeSortingArray);
+                console.log(beforeSortingArray);
                 
-                first13Cards.forEach(card => {
-                    const sortKey = getSortKey(sortType); 
-                    const sortTypeCardValue = card[sortKey]; // retrieve card value using the sort-specific key
-        
-                    // adjust the card value to be the number part of the card object
-                    const cardValue = parseInt(sortTypeCardValue, 10);
-        
-                    const imageSrc = cardImages[cardValue]; // image URL based on the card value
-        
-                    const cardImage = document.createElement('img');
-                    cardImage.src = imageSrc;
-                    cardImage.alt = `${sortType} - ${sortTypeCardValue}`;
-                    cardImage.classList.add('card');
-        
-                    cardContainer.appendChild(cardImage);
-                });
             })
             .catch(error => {
                 console.error('Error:', error);
             });
     };
-
-    
 
 </script>
