@@ -1,4 +1,26 @@
 <style>
+    .main {
+        background: #272525;
+    }
+
+    .layout {
+        margin-left: 100px;
+        margin-bottom: 200px;
+        margin-right: 100px;
+        margin-top: 30px;
+        width: auto;
+        height: auto;
+        background: #ede2dc;
+    }
+
+    .title {
+        color: #ede2dc;
+        font-size: 30px;
+        margin-top: 30px;
+        margin-left: 10px;
+
+    }
+
     .dealBtn {
         background-color: red;
         color: white;
@@ -7,6 +29,7 @@
         border-radius: 5px;
         cursor: pointer;
         margin-top: 30px;
+        margin-left: 10px;
         margin-bottom: 30px;
     }
 
@@ -19,6 +42,7 @@
         cursor: pointer;
         margin-top: 30px;
         margin-bottom: 30px;
+        margin-left: 10px;
     }
     
     .dealBtn:hover {
@@ -39,7 +63,8 @@
 
 
 
-<body>
+<body class="main">
+    <div class="title"> Watch how each sort method works!</div>
     <div class="layout">
         <button class="dealBtn">Deal out the cards</button>
         <div class="cardContainer"></div>
