@@ -1,6 +1,5 @@
 ---
 layout: none
-baseurl: /index
 ---
 
  {%- include header.html -%}

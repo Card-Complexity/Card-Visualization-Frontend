@@ -1,3 +1,7 @@
+---
+layout: none
+---
+
 <style>
     .main {
         background: #272525;
