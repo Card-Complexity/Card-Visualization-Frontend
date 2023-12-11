@@ -42,6 +42,8 @@
     const deckURL = `https://www.deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1`;
     let deckID;
 
+    let cards = [];
+
     async function getDeck(){
         const response = await fetch(deckURL);
         const deckDetails = await response.json();
@@ -62,19 +64,32 @@
 
             const cardDetails = card.cards[0];
             cards.push(cardDetails.value);
+            console.log(cards)
             cardContainer.innerHTML += `<img src="${cardDetails.image}">`;
         }
 
-        const sortResponse = await fetch('/sort/bubble', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(cards)
+
+        fetch('http://localhost:8085/api/sorts/bubble', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(),
+        })
+        .then(response => {
+          if (response.ok) {
+            return response.json();
+          }
+          throw new Error('network err');
+        })
+        .then(data => {
+          console.log('recived data', data);
+        })
+        .catch(error => {
+          console.error('err', error);
         });
-    
-        const sortedCards = await sortResponse.json();
-        console.log('Sorted Cards:', sortedCards);
+        
+        
     };
 
 </script>
