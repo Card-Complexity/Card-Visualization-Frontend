@@ -186,7 +186,7 @@
         sortStepButton.addEventListener('click', () => {
             if (currentStep < swapData.length) {
                 const swap = swapData[currentStep];
-                swapCards(swap.Original - 1, swap.Final - 1); // - 1 to adjust to array index
+                swapCards(swap.Original, swap.Final); // - 1 to adjust to array index
                 currentStep++;
             } else {
                 sortStepButton.disabled = true;
@@ -199,26 +199,26 @@
 
     function swapCards(originalIndex, finalIndex) {
         const cardImages = document.querySelectorAll('.cardContainer img');
-    
-        // swap the src attribute of the cards to visually change their positions
-        const tempSrc = cardImages[originalIndex].src;
-        cardImages[originalIndex].src = cardImages[finalIndex].src;
-        cardImages[finalIndex].src = tempSrc;
+        console.log(cardImages);
 
-        cardImages[originalIndex].style.animation = "bounceEffect 0.5s";
-        cardImages[finalIndex].style.animation = "bounceEffect 0.5s";
+        const trueOgIndex = originalIndex + 1;
+        let trueFIndex = finalIndex + 1;
+
+        if (trueFIndex === 13) {
+            trueFIndex --;
+        };
+
+        // swap the src attribute of the cards to visually change their positions
+        console.log(trueFIndex);
+        console.log(cardImages[trueFIndex]);
+        console.log("");
+        const tempSrc = cardImages[trueOgIndex].src;
+        cardImages[trueOgIndex].src = cardImages[trueFIndex].src;
+        cardImages[trueFIndex].src = tempSrc;
+
+        cardImages[trueOgIndex].style.animation = "bounceEffect 0.5s";
+        cardImages[trueFIndex].style.animation = "bounceEffect 0.5s";
     
-        // apply overlay effect to the swapping cards
-        cardImages[originalIndex].classList.add('overlay');
-        cardImages[finalIndex].classList.add('overlay');
-    
-        // remove the overlay and animation after 1 second
-        setTimeout(() => {
-            cardImages[originalIndex].classList.remove('overlay');
-            cardImages[finalIndex].classList.remove('overlay');
-            cardImages[originalIndex].style.animation = "none";
-            cardImages[finalIndex].style.animation = "none";
-        }, 1000);
     }
 
     sortButtons.forEach(button => {
