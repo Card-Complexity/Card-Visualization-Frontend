@@ -22,46 +22,11 @@ layout: none
         font-size: 30px;
         margin-top: 30px;
         margin-left: 10px;
+        font-family: "Courier New", Courier, monospace;
 
     }
 
-    /* css styles for the table */
-    .tableContainer {
-        margin-top: 20px;
-    }
-
-    .analyticsTable {
-        margin-left: 100px;
-        width: 80%;
-        height: auto;
-        border-collapse: collapse;
-    }
-
-    .analyticsTable th,
-    .analyticsTable td {
-        border: 1px solid #272525;
-        padding: 8px;
-        text-align: left;
-    }
-
-
-    .analyticsTable th {
-        background-color: #ede2dc;
-        font-weight: bold;
-    }
-
-
-    .analyticsTable tbody {
-        background-color: #ede2dc;
-    }
-
-
-    .analyticsTable tbody tr:hover {
-        background-color: #ede2dc;
-    }
-    /* end of table styling */
-
-    .dealBtn {
+    .sortBtn { 
         background-color: red;
         color: white;
         padding: 10px 20px;
@@ -69,11 +34,23 @@ layout: none
         border-radius: 5px;
         cursor: pointer;
         margin-top: 30px;
-        margin-left: 10px;
         margin-bottom: 30px;
+        margin-left: 10px;
     }
 
-    .sortBtn { 
+    .regBtn { 
+        background-color: red;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 30px;
+        margin-bottom: 30px;
+        margin-left: 10px;
+    }
+
+    .sortStepBtn {
         background-color: red;
         color: white;
         padding: 10px 20px;
@@ -88,6 +65,7 @@ layout: none
     .dealBtn:hover {
         background-color: darkred;
     }
+    
 
     .cardContainer { 
         border: 1px solid black;
@@ -99,110 +77,193 @@ layout: none
         margin: 5px;
     }
 
+    /* animation for cards */
+    @keyframes bounceEffect {
+        0% { transform: translateY(0); }
+        50% { transform: translateY(-5px); }
+        100% { transform: translateY(0); }
+    }
+    
+    .overlay {
+        position: relative;
+    }
+    
+    .overlay::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        color: rgba(234, 28, 28, 0.5);
+        transition: opacity 1s ease-in-out;
+        z-index: 1;
+    }
+    
+    .overlay::after {
+        opacity: 1;
+    }
+    
+    .overlay {
+        animation: fadeOut 1s forwards;
+    }
+    
+    @keyframes fadeOut {
+        0% { opacity: 1; }
+        100% { opacity: 0; }
+    }
+
+    /* end of animation for cards */
+    
+
 </style>
 
 
 
 <body class="main">
-    <div class="title"> Watch how each sort method works!</div>
+    <div class="title"> Watch how each sort method works! Click on a sort method to start:</div>
     <div class="layout">
-        <button class="dealBtn">Deal out the cards</button>
-        <div class="cardContainer"></div>
         <div>
             <button class="sortBtn" data-sort="bubble">Bubble Sort</button>
             <button class="sortBtn" data-sort="merge">Merge Sort</button>
             <button class="sortBtn" data-sort="insertion">Insertion Sort</button>
             <button class="sortBtn" data-sort="selection">Selection Sort</button>
+            <button class="regBtn" id="regBtn">Integer Sorts</button>
         </div>
+        <div class="cardContainer"></div>
     </div>
 </body>
 
 
 
 <script>
+    
+    //on button click go to cardtest.html
+    const regBtn = document.querySelector("#regBtn");
+    regBtn.addEventListener("click", () => {
+        window.location.href = "{{site.baseurl}}/cardtest.html";
+    }); 
+    
     const dealBtnClick = document.querySelector(".dealBtn");
     const cardContainer = document.querySelector(".cardContainer");
     const sortButtons = document.querySelectorAll(".sortBtn");
     const deckURL = `https://www.deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1`;
     let deckID;
 
+    let data = [];
     let cards = [];
+    let sortType = '';
+    let swapData = [];
 
-    async function getDeck(){
-        const response = await fetch(deckURL);
-        const deckDetails = await response.json();
+    const cardImages = {
+        1: 'https://deckofcardsapi.com/static/img/AS.png', 
+        2: 'https://deckofcardsapi.com/static/img/2S.png',
+        3: 'https://deckofcardsapi.com/static/img/3S.png',
+        4: 'https://deckofcardsapi.com/static/img/4S.png',
+        5: 'https://deckofcardsapi.com/static/img/5S.png',
+        6: 'https://deckofcardsapi.com/static/img/6S.png',
+        7: 'https://deckofcardsapi.com/static/img/7S.png',
+        8: 'https://deckofcardsapi.com/static/img/8S.png',
+        9: 'https://deckofcardsapi.com/static/img/9S.png',
+        10: 'https://deckofcardsapi.com/static/img/0S.png',
+        11: 'https://deckofcardsapi.com/static/img/JS.png',
+        12: 'https://deckofcardsapi.com/static/img/QS.png',
+        13: 'https://deckofcardsapi.com/static/img/KS.png',
 
-        console.log(deckDetails.deck_id);
-        deckID = deckDetails.deck_id;
-    }
-    getDeck();
+    };
 
+    let beforeSorting = [];
+
+    function renderCards(beforeSortingArray) {
+        cardContainer.innerHTML = '';
     
-    function displayAnalyticsData(data) {
-        const tableContainer = document.createElement('div');
-        tableContainer.classList.add('tableContainer');
-
-        const table = document.createElement('table');
-        table.classList.add('analyticsTable');
-
-        const tableHeader = document.createElement('thead');
-        const headerRow = document.createElement('tr');
-        const headers = ['Metric', 'Value'];
-        headers.forEach(headerText => {
-            const th = document.createElement('th');
-            th.textContent = headerText;
-            headerRow.appendChild(th);
-        });
-        tableHeader.appendChild(headerRow);
-        table.appendChild(tableHeader);
-
-    // create table body with analytics data
-        const tableBody = document.createElement('tbody');
-        for (const [key, value] of Object.entries(data)) {
-            const row = document.createElement('tr');
-            const metricCell = document.createElement('td');
-            metricCell.textContent = key;
-            const valueCell = document.createElement('td');
-            valueCell.textContent = value;
-            row.appendChild(metricCell);
-            row.appendChild(valueCell);
-            tableBody.appendChild(row);
-        }
-        table.appendChild(tableBody);
-
-        tableContainer.appendChild(table);
-        document.body.appendChild(tableContainer);
-    };
-
-
-    dealBtnClick.onclick = async function(){
-        for (let i = 0; i < 10; i++) {
-            const cardURL = `https://www.deckofcardsapi.com/api/deck/${deckID}/draw/?count=1`;
-            const response = await fetch(cardURL);
-            const card = await response.json();
-
-            console.log(card.cards[0]);
-
-            const cardDetails = card.cards[0];
-            cards.push(cardDetails.value);
-            console.log(cards)
-            cardContainer.innerHTML += `<img src="${cardDetails.image}">`;
-        }
-    };
-
-
-        sortButtons.forEach(button => {
-            button.addEventListener("click", () => {
-                const sortType = button.dataset.sort;
-                sortCards(sortType);
-
+        beforeSortingArray.forEach(cardValue => {
+            if (cardImages.hasOwnProperty(cardValue)) {
+                const imageSrc = cardImages[cardValue];
+                const cardImage = document.createElement('img');
+                cardImage.src = imageSrc;
+                cardImage.alt = `Card - ${cardValue}`;
+                cardImage.classList.add('card');
             
-            });
+                cardContainer.appendChild(cardImage);
+            } else {
+                console.error(`Card value ${cardValue} not found in cardImages.`);
+            }
         });
+    }
+
+    const sortKeyMapping = {
+        bubble: 'B',
+        selection: 'S',
+        merge: 'M',
+        insertion: 'I',
+    };
 
 
-  function sortCards(sortType) {
-        const sortURL = `http://localhost:8085/api/sorts/${sortType}`;
+    function createSortStepButton() {
+        const sortStepButton = document.createElement('button');
+        sortStepButton.textContent = 'Sort Step';
+        sortStepButton.classList.add('sortStepBtn'); 
+    
+        const layoutDiv = document.querySelector('.layout');
+        layoutDiv.appendChild(sortStepButton);
+
+        sortStepButton.addEventListener('click', () => {
+            if (currentStep < swapData.length) {
+                const swap = swapData[currentStep];
+                swapCards(swap.Original, swap.Final); // - 1 to adjust to array index
+                currentStep++;
+            } else {
+                sortStepButton.disabled = true;
+                console.log('End of position swaps');
+            }
+          });
+    }
+
+    let currentStep = 0;
+
+    function swapCards(originalIndex, finalIndex) {
+        const cardImages = document.querySelectorAll('.cardContainer img');
+        console.log(cardImages);
+
+        const trueOgIndex = originalIndex + 1;
+        let trueFIndex = finalIndex + 1;
+
+        if (trueFIndex === 13) {
+            trueFIndex --;
+        };
+
+        // swap the src attribute of the cards to visually change their positions
+        console.log(trueFIndex);
+        console.log(cardImages[trueFIndex]);
+        console.log("");
+        const tempSrc = cardImages[trueOgIndex].src;
+        cardImages[trueOgIndex].src = cardImages[trueFIndex].src;
+        cardImages[trueFIndex].src = tempSrc;
+
+        cardImages[trueOgIndex].style.animation = "bounceEffect 0.5s";
+        cardImages[trueFIndex].style.animation = "bounceEffect 0.5s";
+    
+    }
+
+    sortButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            sortType = button.dataset.sort;
+            sortCards(sortType);
+            createSortStepButton();
+
+        });
+    });
+
+    function getSortKey(sortType) {
+        return sortKeyMapping[sortType];
+        console.log(sortKeyMapping[sortType]); 
+    }
+
+    let beforeSortingArray = null;
+
+    function sortCards(sortType) {
+        const sortURL = `http://localhost:8085/api/sorts/${sortType}Cards`;
         console.log(sortURL);
 
         fetch(sortURL, {
@@ -219,10 +280,26 @@ layout: none
                 }
                 throw new Error('Network error');
             })
-            .then(data => {
+            .then(responseData => {
                 console.log(`Received sorted data using ${sortType} sort:`, data);
-                displayAnalyticsData(data);
+                data = responseData;
+                console.log(data);
 
+                swapData = responseData.slice(0, -1);
+                console.log("swap data: ");
+                console.log(swapData);
+
+                // loop through the response object to find the object containing the beforeSorting property
+                for (const key in responseData) {
+                    if (responseData.hasOwnProperty(key) && responseData[key].hasOwnProperty('BeforeSorting')) {
+                        // extract the BeforeSorting array and parse it to an actual array
+                        beforeSortingArray = JSON.parse(responseData[key].BeforeSorting);
+                        break; 
+                    }
+                }
+                renderCards(beforeSortingArray);
+                console.log(beforeSortingArray);
+                
             })
             .catch(error => {
                 console.error('Error:', error);
