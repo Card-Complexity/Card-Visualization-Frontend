@@ -38,7 +38,7 @@ Ekam: Palindrome, Merge for the backend, and then animations to match these sort
 ## Bubble Sort Sample
 
 
-```Java
+```java
 import java.util.Arrays;
 import java.util.Random;
 
@@ -89,7 +89,7 @@ public class genericSort {
 ```
 
 
-```Java
+```java
 import java.util.Arrays;
 import java.util.Random;
 
@@ -186,7 +186,7 @@ bubbleSort.main(null);
 
 
 
-```Java
+```java
 public class bubbleSort extends genericSort {
     @Override
     public void sort(int[] arr) {
@@ -231,7 +231,7 @@ bubbleSort.main(null);
 ## Insertion Sort Sample
 
 
-```Java
+```java
 import java.util.Arrays;
 import java.util.Random;
 
@@ -332,7 +332,7 @@ insertionSort.main(null);
 
 
 
-```Java
+```java
 // rewritten using inheritance of generic
 
 public class insertionSort extends genericSort {
@@ -378,7 +378,7 @@ insertionSort.main(null);
 ## Selection Sort Sample
 
 
-```Java
+```java
 import java.util.Arrays;
 import java.util.Random;
 
@@ -471,7 +471,7 @@ selectionSort.main(null);
 
 
 
-```Java
+```java
 // rewritten using inheritance of generic
 
 public class selectionSort extends genericSort {
@@ -518,7 +518,7 @@ selectionSort.main(null);
 ## Merge Sort
 
 
-```Java
+```java
 import java.util.Arrays;
 import java.util.Random;
 
@@ -659,7 +659,7 @@ MergeSort.main(null);
 
 
 
-```Java
+```java
 // w/ inheritance 
 
 public class mergeSort extends genericSort {
@@ -761,7 +761,7 @@ mergeSort.main(null);
 # Fibonacci
 
 
-```Java
+```java
 import java.util.ArrayList;
 import java.util.List;
 
