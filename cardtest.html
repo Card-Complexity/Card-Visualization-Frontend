@@ -109,6 +109,8 @@
             <button class="sortBtn" data-sort="merge">Merge Sort</button>
             <button class="sortBtn" data-sort="insertion">Insertion Sort</button>
             <button class="sortBtn" data-sort="selection">Selection Sort</button>
+            <button class="sortBtn" data-sort="fibonacci">Fibonnaci Sequence</button>
+            <button class="sortBtn" data-sort="palindrome">Palindrome Sequence</button>
         </div>
     </div>
 </body>
@@ -184,6 +186,10 @@
             console.log(cards)
             cardContainer.innerHTML += `<img src="${cardDetails.image}">`;
         }
+
+        tableContainers.forEach(container => {
+            container.remove();
+        });
     };
 
 
