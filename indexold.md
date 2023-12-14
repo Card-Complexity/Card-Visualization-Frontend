@@ -1,3 +1,7 @@
+---
+layout: none
+---
+
 <style>
     .main {
         background: #272525;
@@ -18,7 +22,7 @@
         font-size: 30px;
         margin-top: 30px;
         margin-left: 10px;
-        font-family: "Courier New", Courier, monospace;
+
     }
 
     /* css styles for the table */
@@ -95,35 +99,20 @@
         margin: 5px;
     }
 
-    .regBtn { 
-        background-color: red;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        margin-top: 30px;
-        margin-bottom: 30px;
-        margin-left: 10px;
-    }
-
 </style>
 
 
 
 <body class="main">
-    <div class="title"> See the difference between the sorts and their complexities</div>
-    <div class="layout"> 
-        <!-- <button class="dealBtn">Deal out the cards</button>
-        <div class="cardContainer"></div> -->
+    <div class="title"> Watch how each sort method works!</div>
+    <div class="layout">
+        <button class="dealBtn">Deal out the cards</button>
+        <div class="cardContainer"></div>
         <div>
             <button class="sortBtn" data-sort="bubble">Bubble Sort</button>
             <button class="sortBtn" data-sort="merge">Merge Sort</button>
             <button class="sortBtn" data-sort="insertion">Insertion Sort</button>
             <button class="sortBtn" data-sort="selection">Selection Sort</button>
-            <button class="sortBtn" data-sort="fibonacci">Fibonnaci Sequence</button>
-            <button class="sortBtn" data-sort="palindrome">Palindrome Sequence</button>
-            <button class="regBtn" id="regBtn">Integer Sorts</button>
         </div>
     </div>
 </body>
@@ -131,12 +120,6 @@
 
 
 <script>
-    //on button click go to cardtest.html
-    const regBtn = document.querySelector("#regBtn");
-    regBtn.addEventListener("click", () => {
-        window.location.href = "/Card-Visualization-Frontend";
-    }); 
-    
     const dealBtnClick = document.querySelector(".dealBtn");
     const cardContainer = document.querySelector(".cardContainer");
     const sortButtons = document.querySelectorAll(".sortBtn");
@@ -205,10 +188,6 @@
             console.log(cards)
             cardContainer.innerHTML += `<img src="${cardDetails.image}">`;
         }
-
-        tableContainers.forEach(container => {
-            container.remove();
-        });
     };
 
 

@@ -107,13 +107,37 @@
         margin-left: 10px;
     }
 
+    .formContainer {
+        display: none;
+        margin-top: 30px;
+        margin-left: 10px;
+    }
+
+    .formContainer.show {
+        display: block;
+    }
+
+    .formContainer input[type="text"] {
+        padding: 5px;
+        margin-right: 10px;
+    }
+
+    .formContainer button {
+        background-color: red;
+        color: white;
+        padding: 5px 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
 </style>
 
 
 
 <body class="main">
     <div class="title"> See the difference between the sorts and their complexities</div>
-    <div class="layout"> 
+    <div class="layout">
         <!-- <button class="dealBtn">Deal out the cards</button>
         <div class="cardContainer"></div> -->
         <div>
@@ -123,7 +147,12 @@
             <button class="sortBtn" data-sort="selection">Selection Sort</button>
             <button class="sortBtn" data-sort="fibonacci">Fibonnaci Sequence</button>
             <button class="sortBtn" data-sort="palindrome">Palindrome Sequence</button>
+            
             <button class="regBtn" id="regBtn">Integer Sorts</button>
+        </div>
+        <div class="formContainer" id="palindromeForm">
+            <input type="text" id="palindromeInput" placeholder="Enter a string">
+            <button id="palindromeSubmit">Submit</button>
         </div>
     </div>
 </body>
@@ -212,17 +241,14 @@
     };
 
 
-        sortButtons.forEach(button => {
-            button.addEventListener("click", () => {
-                const sortType = button.dataset.sort;
-                sortCards(sortType);
-
-            
-            });
+    sortButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            const sortType = button.dataset.sort;
+            sortCards(sortType);
         });
+    });
 
-
-  function sortCards(sortType) {
+    function sortCards(sortType) {
         const sortURL = `http://localhost:8085/api/sorts/${sortType}`;
         console.log(sortURL);
 
@@ -243,11 +269,44 @@
             .then(data => {
                 console.log(`Received sorted data using ${sortType} sort:`, data);
                 displayAnalyticsData(data);
-
             })
             .catch(error => {
                 console.error('Error:', error);
             });
     };
+
+    const palindromeButton = document.querySelector('.sortBtn[data-sort="palindrome"]');
+    const palindromeForm = document.querySelector('#palindromeForm');
+    const palindromeInput = document.querySelector('#palindromeInput');
+    const palindromeSubmit = document.querySelector('#palindromeSubmit');
+
+    palindromeButton.addEventListener('click', () => {
+        palindromeForm.classList.add('show');
+    });
+
+    palindromeSubmit.addEventListener('click', () => {
+        const palindromeString = palindromeInput.value;
+        const palindromeURL = 'http://localhost:8085/api/sorts/palindrome';
+
+        fetch(palindromeURL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ string: palindromeString }),
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Network error');
+            })
+            .then(data => {
+                console.log('Palindrome response:', data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    });
 
 </script>
